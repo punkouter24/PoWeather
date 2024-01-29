@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoWeather", "PoWeather\PoWeather.csproj", "{4A393650-4B98-4FBB-BFB3-10D3C74397A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoWeather.Tests", "PoWeather.Tests\PoWeather.Tests.csproj", "{DD8DD5CA-4E24-43C6-A46B-EE13A26D6F13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4A393650-4B98-4FBB-BFB3-10D3C74397A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A393650-4B98-4FBB-BFB3-10D3C74397A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A393650-4B98-4FBB-BFB3-10D3C74397A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD8DD5CA-4E24-43C6-A46B-EE13A26D6F13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD8DD5CA-4E24-43C6-A46B-EE13A26D6F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD8DD5CA-4E24-43C6-A46B-EE13A26D6F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD8DD5CA-4E24-43C6-A46B-EE13A26D6F13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

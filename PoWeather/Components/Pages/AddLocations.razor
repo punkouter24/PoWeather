@@ -1,28 +1,35 @@
 @page "/AddLocations"
 @using PoWeather.Services
+@using PoWeather.Data
 @using Microsoft.AspNetCore.Identity
+@using MudBlazor
+@inject UserManager<ApplicationUser> UserManager
 @inject BlobStorageService BlobStorageService
-@inject UserManager<IdentityUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
-@using MudBlazor
 
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            <MudPaper Elevation="1" Class="pa-4">
-                <MudText Typo="Typo.h5">Manage Your Locations</MudText>
-                <MudTextField @bind-Value="newLocation" Label="Enter a zip code" />
-                <MudButton OnClick="AddLocation" Color="Color.Primary">Add</MudButton>
+            <div style="padding: 16px; margin-top: 20px;">
+                <h5 style="margin-bottom: 20px;">Manage Your Locations</h5>
 
-                <MudList>
+                <div>
+                    <input type="text" @bind="newLocation" />
+                    <button @onclick="AddLocation">Add</button>
+                </div>
+
+                <div style="max-width: 300px; margin: auto;">
                     @foreach (var location in userLocations)
                     {
-                        <MudListItem>@location <MudButton OnClick="() => RemoveLocation(location)">Remove</MudButton>
-                        </MudListItem>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span>@location</span>
+                            <button @onclick="() => RemoveLocation(location)">Remove</button>
+                        </div>
                     }
-                </MudList>
-            </MudPaper>
+                </div>
+            </div>
         </Authorized>
         <NotAuthorized>
             <p>You are not logged in. Please <a href="Account/Login">Login</a>.</p>
@@ -30,12 +37,14 @@
     </AuthorizeView>
 </CascadingAuthenticationState>
 
+
 @code {
     private string newLocation;
     private List<string> userLocations = new();
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("OnInitializedAsync");
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
@@ -47,6 +56,8 @@
 
     private async Task AddLocation()
     {
+        Console.WriteLine("AddLocation");
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
@@ -57,7 +68,6 @@
             newLocation = string.Empty;
         }
     }
-
 
     private async Task RemoveLocation(string location)
     {
@@ -70,6 +80,4 @@
             await BlobStorageService.SaveLocationsAsync(user.Identity.Name, userLocations);
         }
     }
-
-
 }

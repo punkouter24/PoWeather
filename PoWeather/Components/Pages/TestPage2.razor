@@ -1,0 +1,22 @@
+﻿@page "/testpage2"
+
+<h3>Submit Example</h3>
+
+<input type="text" @bind="InputValue" />
+<button @onclick="HandleSubmit">Submit</button>
+
+@if (!string.IsNullOrEmpty(submittedValue))å
+{
+    <p>Submitted Value: @submittedValue</p>
+}
+
+@code {
+    private string InputValue { get; set; }
+    private string submittedValue;
+
+    private void HandleSubmit()
+    {
+        //never comes here after button click
+        submittedValue = InputValue;
+    }
+}

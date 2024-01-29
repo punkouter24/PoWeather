@@ -43,13 +43,19 @@ builder.Services.AddSingleton<BlobServiceClient>(provider => new BlobServiceClie
 builder.Services.AddHttpClient();
 builder.Services.AddMudServices();
 
-builder.Services.AddSingleton<BlobStorageService>(provider =>
+// builder.Services.AddSingleton<BlobStorageService>(provider =>
+// {
+//    // var connectionString = builder.Configuration.GetConnectionString("AzureStorage:ConnectionString");
+//     return new BlobStorageService(connectionString2);
+// });
+
+builder.Services.AddScoped<BlobStorageService>(provider =>
 {
-   // var connectionString = builder.Configuration.GetConnectionString("AzureStorage:ConnectionString");
+    var configuration = provider.GetRequiredService<IConfiguration>();
     return new BlobStorageService(connectionString2);
 });
 
- builder.Services.AddScoped<BlobStorageService>();
+// builder.Services.AddScoped<BlobStorageService>();
 
 builder.Services.AddHttpClient<WeatherService>();
 
@@ -73,8 +79,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

@@ -1,6 +1,8 @@
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using PoWeather.Components;
 using PoWeather.Components.Account;
 using PoWeather.Data;
@@ -34,6 +36,15 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+var connectionString2 = builder.Configuration.GetConnectionString("StorageConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddSingleton<BlobServiceClient>(provider => new BlobServiceClient(connectionString2));
+builder.Services.AddHttpClient();
+builder.Services.AddMudServices();
+
+
+
+
 
 var app = builder.Build();
 

@@ -6,6 +6,7 @@ using MudBlazor.Services;
 using PoWeather.Components;
 using PoWeather.Components.Account;
 using PoWeather.Data;
+using PoWeather.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,8 +43,15 @@ builder.Services.AddSingleton<BlobServiceClient>(provider => new BlobServiceClie
 builder.Services.AddHttpClient();
 builder.Services.AddMudServices();
 
+builder.Services.AddSingleton<BlobStorageService>(provider =>
+{
+   // var connectionString = builder.Configuration.GetConnectionString("AzureStorage:ConnectionString");
+    return new BlobStorageService(connectionString2);
+});
 
+ builder.Services.AddScoped<BlobStorageService>();
 
+builder.Services.AddHttpClient<WeatherService>();
 
 
 var app = builder.Build();

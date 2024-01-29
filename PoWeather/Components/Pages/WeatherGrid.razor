@@ -1,0 +1,17 @@
+@using PoWeather.Data
+@using PoWeather.Services
+@inject WeatherService WeatherService
+
+<MudGrid>
+    @foreach (var zipCode in Locations)
+    {
+        <MudItem xs="12" sm="6" md="4">
+            <WeatherCard ZipCode="@zipCode" />
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    [Parameter]
+    public List<string> Locations { get; set; }
+}

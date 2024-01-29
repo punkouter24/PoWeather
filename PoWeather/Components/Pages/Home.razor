@@ -1,7 +1,48 @@
 ﻿@page "/"
+@using PoWeather.Data
+@using PoWeather.Services
+@using Microsoft.AspNetCore.Identity
+@inject WeatherService WeatherService
+@inject UserManager<ApplicationUser> UserManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject BlobStorageService BlobStorageService
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <h3>Weather Dashboard</h3>
+            @if (userLocations == null)
+            {
+                <p><em>Loading...</em></p> <!-- Consider replacing with a spinner -->
+            }
+            else if (!userLocations.Any())
+            {
+                <p>No locations found. Add locations in your profile.</p>
+            }
+            else
+            {
+                <WeatherGrid Locations="@userLocations" />
+            }
+        </Authorized>
+        <NotAuthorized>
+            <p>You are not logged in. Please <a href="Account/Login">Login</a>.</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
 
-Welcome to your new app.
+@code {
+    private List<string> userLocations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            userLocations = await BlobStorageService.GetLocationsAsync(user.Identity.Name);
+        }
+    }
+}

@@ -1,0 +1,75 @@
+@page "/AddLocations"
+@using PoWeather.Services
+@using Microsoft.AspNetCore.Identity
+@inject BlobStorageService BlobStorageService
+@inject UserManager<IdentityUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
+@using MudBlazor
+
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudText Typo="Typo.h5">Manage Your Locations</MudText>
+                <MudTextField @bind-Value="newLocation" Label="Enter a zip code" />
+                <MudButton OnClick="AddLocation" Color="Color.Primary">Add</MudButton>
+
+                <MudList>
+                    @foreach (var location in userLocations)
+                    {
+                        <MudListItem>@location <MudButton OnClick="() => RemoveLocation(location)">Remove</MudButton>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </Authorized>
+        <NotAuthorized>
+            <p>You are not logged in. Please <a href="Account/Login">Login</a>.</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+
+@code {
+    private string newLocation;
+    private List<string> userLocations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            userLocations = await BlobStorageService.GetLocationsAsync(user.Identity.Name);
+        }
+    }
+
+    private async Task AddLocation()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!string.IsNullOrWhiteSpace(newLocation) && user.Identity.IsAuthenticated)
+        {
+            userLocations.Add(newLocation);
+            await BlobStorageService.SaveLocationsAsync(user.Identity.Name, userLocations);
+            newLocation = string.Empty;
+        }
+    }
+
+
+    private async Task RemoveLocation(string location)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated && userLocations.Contains(location))
+        {
+            userLocations.Remove(location);
+            await BlobStorageService.SaveLocationsAsync(user.Identity.Name, userLocations);
+        }
+    }
+
+
+}

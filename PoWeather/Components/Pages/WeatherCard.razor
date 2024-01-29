@@ -1,0 +1,33 @@
+@using PoWeather.Data
+@using PoWeather.Services
+@inject WeatherService WeatherService
+
+<MudCard>
+    <MudCardContent>
+        @if (weatherInfo != null)
+        {
+            <MudText Typo="Typo.h6">Weather for @ZipCode</MudText>
+            <MudText>Temperature: @weatherInfo.TempC °C</MudText>
+            // Add more weather details here
+        }
+        else
+        {
+            <MudText>Loading weather data...</MudText>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string ZipCode { get; set; }
+
+    private WeatherInfo weatherInfo;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(ZipCode))
+        {
+            weatherInfo = await WeatherService.GetWeatherAsync(ZipCode);
+        }
+    }
+}

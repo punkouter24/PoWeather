@@ -1,12 +1,14 @@
 namespace PoWeather.Data
 {
-    public class WeatherInfo
+  public class WeatherResponse
     {
-        public float TempC { get; set; }
+        public CurrentWeather Current { get; set; }
     }
 
-    public class WeatherApiResponse
+    public class CurrentWeather
     {
-        public WeatherInfo Current { get; set; }
+        public float TempC { get; set; }
+        public float TempF { get; set; }
+        // ... other relevant fields
     }
 }

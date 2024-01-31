@@ -20,7 +20,18 @@ namespace PoWeather.Services
 
         public async Task<CurrentWeather> GetWeatherAsync(string zipCode)
         {
-            var response = await _httpClient.GetFromJsonAsync<WeatherResponse>($"current.json?key={_apiKey}&q={zipCode}");
+            // Construct the endpoint with query parameters
+            string requestUri = $"current.json?key={_apiKey}&q={zipCode}";
+
+            // Combine the base URL with the endpoint to get the full URL
+            Uri fullUri = new Uri(_httpClient.BaseAddress, requestUri);
+
+            // Now you can log or inspect the full URL
+            Console.WriteLine($"Requesting Weather API: {fullUri}");
+
+            // Make the HTTP request
+            var response = await _httpClient.GetFromJsonAsync<WeatherResponse>(requestUri);
+
             return response?.Current;
         }
     }

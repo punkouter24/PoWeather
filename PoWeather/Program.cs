@@ -7,6 +7,7 @@ using PoWeather.Components;
 using PoWeather.Components.Account;
 using PoWeather.Data;
 using PoWeather.Services;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,8 +39,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-var connectionString2 = builder.Configuration.GetConnectionString("StorageConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddSingleton<BlobServiceClient>(provider => new BlobServiceClient(connectionString2));
+builder.Services.AddHttpClient<WeatherService>();
+
+
 builder.Services.AddHttpClient();
 builder.Services.AddMudServices();
 
@@ -49,6 +51,10 @@ builder.Services.AddMudServices();
 //     return new BlobStorageService(connectionString2);
 // });
 
+
+var connectionString2 = builder.Configuration.GetConnectionString("StorageConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//builder.Services.AddSingleton<BlobServiceClient>(provider => new BlobServiceClient(connectionString2));
+
 builder.Services.AddScoped<BlobStorageService>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
@@ -57,7 +63,28 @@ builder.Services.AddScoped<BlobStorageService>(provider =>
 
 // builder.Services.AddScoped<BlobStorageService>();
 
-builder.Services.AddHttpClient<WeatherService>();
+//builder.Services.AddAzureClients(clientBuilder =>
+//{
+//    clientBuilder.AddBlobServiceClient(builder.Configuration["ConnectionStrings:StorageConnection:blob"], preferMsi: true);
+//    clientBuilder.AddQueueServiceClient(builder.Configuration["ConnectionStrings:StorageConnection:queue"], preferMsi: true);
+//});
+
+//builder.Services.AddScoped<BlobStorageService>();
+
+//services.AddScoped<BlobStorageService>(provider => new BlobStorageService(connectionString));
+
+
+
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    string storageConnectionString = builder.Configuration.GetConnectionString("StorageConnection");
+
+    clientBuilder.AddBlobServiceClient(storageConnectionString, preferMsi: true);
+    clientBuilder.AddQueueServiceClient(storageConnectionString, preferMsi: true);
+});
+
+
+
 
 
 var app = builder.Build();

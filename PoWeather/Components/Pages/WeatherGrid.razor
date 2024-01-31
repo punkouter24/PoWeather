@@ -2,6 +2,18 @@
 @using PoWeather.Services
 @inject WeatherService WeatherService
 
+<style>
+    .mud-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .mud-item {
+        flex-basis: 100%;
+        margin: 10px;
+    }
+</style>
+
 <MudGrid>
     @foreach (var zipCode in Locations)
     {

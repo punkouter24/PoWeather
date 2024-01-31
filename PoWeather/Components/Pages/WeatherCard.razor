@@ -2,13 +2,26 @@
 @using PoWeather.Services
 @inject WeatherService WeatherService
 
+<style>
+    .mud-card-content {
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+   .mud-text {
+        color: #333;
+        font-size: 1.2em;
+        display: block; /* Add this line */
+    }
+</style>
+
 <MudCard>
     <MudCardContent>
         @if (weatherInfo != null)
         {
             <MudText Typo="Typo.h6">Weather for @ZipCode</MudText>
             <MudText>Temperature: @weatherInfo.TempC °C</MudText>
-            // Add more weather details here
         }
         else
         {

@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using PoWeather.Data;
@@ -31,6 +32,8 @@ namespace PoWeather.Services
 
             // Make the HTTP request
             var response = await _httpClient.GetFromJsonAsync<WeatherResponse>(requestUri);
+
+           // WeatherResponse weatherResponse = JsonSerializer.Deserialize<WeatherResponse>(jsonString);
 
             return response?.Current;
         }

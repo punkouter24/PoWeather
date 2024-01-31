@@ -9,31 +9,124 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
 
+<style>
+    .location-manager-container {
+        padding: 20px;
+        background-color: #f4f4f4;
+        /* You can choose a color that matches your brand */
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .location-manager-title {
+        margin-bottom: 20px;
+        color: #333;
+        /* Professional dark grey color for text */
+    }
+
+    .location-manager-grid {
+        margin-bottom: 20px;
+    }
+
+    .location-manager-button-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        /* Align the button to the left */
+    }
+
+    .location-manager-add-button {
+        margin-left: 10px;
+        /* Ensure some space between the text field and the button */
+    }
+
+    .location-manager-list {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .location-manager-location-text {
+        flex-grow: 1;
+        padding-right: 20px;
+        /* Ensure space between the text and the button */
+    }
+
+    .location-manager-remove-button {
+        margin-left: auto;
+        /* Push the button to the right */
+    }
+
+    .location-manager-not-authorized-text {
+        color: #d9534f;
+        /* A warning color indicating action is needed */
+    }
+
+    .location-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+    }
+
+    .location-text {
+        flex: 1;
+        margin-right: 16px;
+        /* Ensures some space between the text and the button */
+    }
+
+    .remove-button {
+        background-color: rgb(149, 149, 179);
+        /* Make the button blue */
+        color: white;
+        /* Text color is white for contrast */
+        text-transform: uppercase;
+        /* Optional: Makes the button text uppercase */
+        padding: 8px 16px;
+        /* Adjust padding to match your design */
+        border: none;
+        /* Remove border if any */
+        cursor: pointer;
+        /* Makes it clear the button is clickable */
+    }
+
+    .remove-button:hover {
+        background-color: darken(blue, 5%);
+        /* A darker blue on hover for interactive feedback */
+    }
+</style>
+
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            <div style="padding: 16px; margin-top: 20px;">
-                <h5 style="margin-bottom: 20px;">Manage Your Locations</h5>
+            <MudContainer Class="location-manager-container">
+                <MudText Typo="Typo.h5" Class="location-manager-title">Manage Your Locations</MudText>
 
-                <div>
-                    <input type="text" @bind="newLocation" />
-                    <button @onclick="AddLocation">Add</button>
-                </div>
+                <MudGrid Class="location-manager-grid">
+                    <MudItem xs="12" md="8">
+                        <MudTextField @bind-Value="newLocation" Label="New Location" Variant="Variant.Outlined"
+                            FullWidth />
+                    </MudItem>
+                    <MudItem xs="12" md="4" Class="location-manager-button-container">
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@AddLocation"
+                            Class="location-manager-add-button">Add</MudButton>
+                    </MudItem>
+                </MudGrid>
 
-                <div style="max-width: 300px; margin: auto;">
+                <MudList Class="location-manager-list">
                     @foreach (var location in userLocations)
                     {
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <span>@location</span>
-                            <button @onclick="() => RemoveLocation(location)">Remove</button>
-                        </div>
+                        <MudListItem Class="location-list-item">
+                            <MudText Class="location-text">@location</MudText>
+                            <MudButton Color="Color.Primary" OnClick="@(() => RemoveLocation(location))"
+                                Class="remove-button">Remove</MudButton>
+                        </MudListItem>
                     }
-                </div>
-            </div>
+                </MudList>
+            </MudContainer>
         </Authorized>
         <NotAuthorized>
-            <p>You are not logged in. Please <a href="Account/Login">Login</a>.</p>
+            <MudText Class="location-manager-not-authorized-text">You are not logged in. Please <MudLink
+                    Href="Account/Login">Login</MudLink>.</MudText>
         </NotAuthorized>
     </AuthorizeView>
 </CascadingAuthenticationState>
